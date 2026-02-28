@@ -1,0 +1,370 @@
+:root {
+  --bg-color: #0d0d12;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.15);
+  --accent-color: #e63946;
+  --accent-hover: #ff4d5a;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0b0;
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(230, 57, 70, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(230, 57, 70, 0.05), transparent 25%);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.glass-btn {
+  background: var(--glass-bg);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.glass-btn:hover {
+  background: var(--glass-highlight);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.glass-btn.primary {
+  background: var(--accent-color);
+  border-color: var(--accent-hover);
+}
+
+.glass-btn.primary:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 5px 20px rgba(230, 57, 70, 0.4);
+}
+
+.glass-input {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.glass-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(230, 57, 70, 0.2);
+}
+
+.glas.spinner-text {
+  font-size: 80px;
+  font-weight: 800;
+  color: var(--accent-color);
+  text-shadow: 0 0 20px rgba(230, 57, 70, 0.5);
+  transition: transform 0.1s;
+}
+
+/* Animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popupBounce {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseRed {
+  0% {
+    box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 20px rgba(230, 57, 70, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
+  }
+}
+
+.first-finish-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: slideDown 0.3s ease-out;
+}
+
+.first-finish-content {
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.2) 0%, rgba(0, 0, 0, 0.8) 100%);
+  border: 2px solid var(--accent-color);
+  padding: 40px 60px;
+  border-radius: 24px;
+  text-align: center;
+  animation: popupBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  box-shadow: 0 20px 50px rgba(230, 57, 70, 0.3);
+}
+
+.first-finish-title {
+  color: #fff;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.first-finish-name {
+  color: var(--accent-color);
+  font-size: 48px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulseRed 2s infinite;
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 12px;
+}
+
+/* Custom Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: slideDown 0.3s ease-out;
+}
+
+.modal-content {
+  background: var(--bg-color);
+  border: 1px solid var(--glass-border);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.modal-text {
+  color: var(--text-secondary);
+  margin-bottom: 25px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.dispute-btn {
+  background: rgba(230, 57, 70, 0.1);
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.dispute-btn:hover {
+  background: var(--accent-color);
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
+}
+
+/* Main Container */
+.main-content {
+  flex: 1;
+  padding: 100px 20px 40px;
+  /* Space for fixed navbar */
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Flex Utilities */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Mobile Responsiveness for GameRoom */
+@media (max-width: 768px) {
+  .game-room {
+    flex-direction: column !important;
+  }
+
+  .chat-container {
+    height: 400px !important;
+  }
+
+  .top-info-bar {
+    padding: 10px 15px !important;
+  }
+
+  .top-info-left {
+    gap: 8px !important;
+  }
+
+  .quit-text {
+    display: none !important;
+  }
+
+  .quit-icon {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quit-btn {
+    padding: 8px !important;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .room-code-text {
+    font-size: 16px !important;
+  }
+
+  .top-time-text {
+    font-size: 18px !important;
+  }
+
+  .round-label {
+    display: none !important;
+  }
+
+  .round-text {
+    font-size: 14px !important;
+  }
+
+  .first-finish-popup {
+    justify-content: flex-start !important;
+    padding-top: 15vh !important;
+  }
+
+  .first-finish-content {
+    padding: 20px 30px !important;
+    width: 90% !important;
+  }
+
+  .first-finish-title {
+    font-size: 20px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .first-finish-name {
+    font-size: 28px !important;
+    padding: 5px 10px !important;
+  }
+
+  .waiting-lounge-grid {
+    max-height: 200px !important;
+  }
+
+  .room-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .room-card-actions {
+    width: 100%;
+    justify-content: space-between !important;
+  }
+
+  .share-text {
+    display: none !important;
+  }
+}
