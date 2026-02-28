@@ -1,4 +1,4 @@
-const db = require('../db/setup');
+const pool = require('../db/setup');
 const rooms = new Map();
 
 // Albanian Alphabet without W and X
@@ -15,17 +15,14 @@ function finishGame(room, roomCode, io) {
     room.players.forEach(p => {
         if (p.userId) {
             const isWinner = winners.some(w => w.id === p.id);
-            db.run(
+            pool.query(
                 `UPDATE users SET 
                  games_played = games_played + 1, 
-                 total_score = total_score + ?, 
-                 games_won = games_won + ? 
-                 WHERE id = ?`,
-                [p.score, isWinner ? 1 : 0, p.userId],
-                (err) => {
-                    if (err) console.error("Score SQLite Sync Failure:", err.message);
-                }
-            );
+                 total_score = total_score + $1, 
+                 games_won = games_won + $2 
+                 WHERE id = $3`,
+                [p.score, isWinner ? 1 : 0, p.userId]
+            ).catch(err => console.error("Score Postgres Sync Failure:", err.message));
         }
     });
 
@@ -269,11 +266,10 @@ module.exports = (io) => {
 
                     // Save leaving player's progress if game started but wasn't officially finished
                     if (room.currentRound > 0 && room.state !== 'finished' && leavingPlayer.userId) {
-                        db.run(
-                            `UPDATE users SET games_played = games_played + 1, total_score = total_score + ? WHERE id = ?`,
-                            [leavingPlayer.score, leavingPlayer.userId],
-                            (err) => { if (err) console.error("Early Quit Save Error:", err.message); }
-                        );
+                        pool.query(
+                            `UPDATE users SET games_played = games_played + 1, total_score = total_score + $1 WHERE id = $2`,
+                            [leavingPlayer.score, leavingPlayer.userId]
+                        ).catch(err => console.error("Early Quit Save Error:", err.message));
                     }
 
                     if (room.host === socket.id || room.players.length === 1) {
@@ -281,10 +277,10 @@ module.exports = (io) => {
                         if (room.currentRound > 0 && room.state !== 'finished') {
                             room.players.forEach(p => {
                                 if (p.id !== socket.id && p.userId) { // don't double-save host
-                                    db.run(
-                                        `UPDATE users SET games_played = games_played + 1, total_score = total_score + ? WHERE id = ?`,
+                                    pool.query(
+                                        `UPDATE users SET games_played = games_played + 1, total_score = total_score + $1 WHERE id = $2`,
                                         [p.score, p.userId]
-                                    );
+                                    ).catch(err => console.error("Disband Host Error:", err.message));
                                 }
                             });
                         }
